@@ -41,17 +41,22 @@ const userResolver = {
             }
         },
         login: async (_, { input }, context) => {
-            const { username, password } = input;
-            if (!username || !password) {
-                throw new Error('Invalid username or password');
-            }
-            const { user } = await context.authenticate('graphql-local', {
-                username,
-                password
-            });
+            try {
+                const { username, password } = input;
+                if (!username || !password) {
+                    throw new Error('Invalid username or password');
+                }
+                const { user } = await context.authenticate('graphql-local', {
+                    username,
+                    password
+                });
 
-            await context.login(user);
-            return user;
+                await context.login(user);
+                return user;
+            } catch (error) {
+                console.error('Error in login: ', error);
+                throw new Error(error.message || 'Internal server error');
+            }
         },
         logout: async (_, __, context) => {
             try {
@@ -76,7 +81,10 @@ const userResolver = {
             try {
                 const user = await context.getUser();
                 return user;
-            } catch (error) {}
+            } catch (error) {
+                console.error('Error in authUser: ', error);
+                throw new Error(error.message || 'Internal server error');
+            }
         }
     }
 };

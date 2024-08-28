@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import session from 'express-session';
 import connectMongo from 'connect-mongodb-session';
+import bodyParser from 'body-parser';
 
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -15,8 +16,8 @@ import { buildContext } from 'graphql-passport';
 import mergedResolvers from './resolvers/index.js';
 import mergedTypeDefs from './typeDefs/index.js';
 
-import { connectDB } from './db/connectDB.js';
 import { configurePassport } from './passport/passport.config.js';
+import routes from './routes/index.js';
 
 dotenv.config();
 configurePassport();
@@ -41,8 +42,7 @@ app.use(
         saveUninitialized: false, // option specifies whether to save uninitialized sessions
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 7,
-            httpOnly: true, // this option prevents the Cross-Site Scripting (XSS) attacks
-
+            httpOnly: true // this option prevents the Cross-Site Scripting (XSS) attacks
         },
         store: store
     })
@@ -76,6 +76,7 @@ app.use(
     })
 );
 
-// Modified server startup
-await connectDB();
+app.use(cors())
+app.use('/', bodyParser.json(), bodyParser.urlencoded({extended: false}), routes);
+
 export default httpServer;
