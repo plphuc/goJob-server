@@ -1,6 +1,7 @@
 import { mergeResolvers } from '@graphql-tools/merge';
 import userResolver from './user.resolver.js';
 import customResolver from './custom.resolver.js';
+import postResolver from './post.resolver.js';
 
 const helloResolver = {
     Query: {
@@ -11,7 +12,8 @@ const helloResolver = {
 const mergedResolvers = mergeResolvers([
     userResolver,
     helloResolver,
-    customResolver.dateScalar
+    postResolver,
+    { Date: customResolver.dateScalar }
 ]);
 
 export default mergedResolvers;

@@ -16,7 +16,8 @@ import mergedTypeDefs from './typeDefs/index.js';
 
 import { configurePassport } from './passport/passport.config.js';
 import routes from './routes/index.js';
-import { mergeResolvers } from '@graphql-tools/merge';
+import { connectDB } from './db/connectDB.js';
+import mergedResolvers from './resolvers/index.js';
 
 dotenv.config();
 configurePassport();
@@ -52,7 +53,7 @@ app.use(passport.session());
 
 const server = new ApolloServer({
     typeDefs: mergedTypeDefs,
-    resolvers: mergeResolvers,
+    resolvers: mergedResolvers,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
 });
 
@@ -82,5 +83,7 @@ app.use(
     bodyParser.urlencoded({ extended: false }),
     routes
 );
+
+await connectDB();
 
 export default httpServer;
