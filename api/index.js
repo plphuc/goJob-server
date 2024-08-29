@@ -12,12 +12,11 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 
 import { buildContext } from 'graphql-passport';
-
-import mergedResolvers from './resolvers/index.js';
 import mergedTypeDefs from './typeDefs/index.js';
 
 import { configurePassport } from './passport/passport.config.js';
 import routes from './routes/index.js';
+import { mergeResolvers } from '@graphql-tools/merge';
 
 dotenv.config();
 configurePassport();
@@ -53,7 +52,7 @@ app.use(passport.session());
 
 const server = new ApolloServer({
     typeDefs: mergedTypeDefs,
-    resolvers: mergedResolvers,
+    resolvers: mergeResolvers,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
 });
 
@@ -76,7 +75,12 @@ app.use(
     })
 );
 
-app.use(cors())
-app.use('/', bodyParser.json(), bodyParser.urlencoded({extended: false}), routes);
+app.use(cors());
+app.use(
+    '/',
+    bodyParser.json(),
+    bodyParser.urlencoded({ extended: false }),
+    routes
+);
 
 export default httpServer;

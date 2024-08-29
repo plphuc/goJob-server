@@ -6,9 +6,7 @@ dotenv.config();
 
 const storage = new GridFsStorage({
     url: process.env.MONGO_URI,
-    file: (req, file) => {
-        console.log("sak");
-        
+    file: (req, file) => {        
         const imageType = ['image/png', 'image/jpeg'];
 
         // if file is not image, save it to default bucket
