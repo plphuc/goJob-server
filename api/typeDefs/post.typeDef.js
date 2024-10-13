@@ -1,14 +1,16 @@
 const postTypeDef = `#graphql
     type Post {
         _id: ID!,
-        userId: [User],
+        userId: ID!,
         title: String,
         createdDate: Date!,
         content: String,
-        imageId: String,
+        imageUrl: String,
+        user: User
     }
     
     type Query {
+        getPosts: [Post],
         getPost(input: GetPostInput!): Post
     }
 
@@ -25,14 +27,14 @@ const postTypeDef = `#graphql
     input CreatePostInput {
         title: String!,
         content: String,
-        imageId: String,
+        imageUrl: String,
     }
 
     input EditPostInput {
         _id: ID!,
         title: String,
         content: String,
-        imageId: String,
+        imageUrl: String,
     }
 
     input DeletePostInput {
